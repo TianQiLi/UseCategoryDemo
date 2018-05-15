@@ -7,12 +7,19 @@
 //
 
 #import "ViewController.h"
-
-@interface ViewController ()
+#import "SubViewController.h"
+@interface ViewController ()<UITableViewDataSource,UITableViewDelegate>
 
 @end
 
 @implementation ViewController
+- (IBAction)clickBtn:(UIButton *)sender {
+    SubViewController * vc = [[SubViewController alloc] initWithTableStyle:UITableViewStyleGrouped];
+    vc.type = sender.tag;
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
