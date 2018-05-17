@@ -54,10 +54,23 @@
     [self.tableView.mj_header beginRefreshing];
     self.tableView.backgroundColor = [UIColor redColor];
     self.view.backgroundColor = [UIColor redColor];
+    self.tabBarItem.title = @"sub";
+    self.tabBarItem.badgeValue = @"1";
     
+    UIView * view = [UIView new];
+    view.frame = CGRectMake(0, 0, 20, 20);
+    view.backgroundColor = [UIColor blackColor];
+    [self.tableView addSubview:view];
+    [view mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.tableView);
+        make.leading.equalTo(self.tableView);
+        make.height.mas_equalTo(20);
+        make.width.mas_equalTo(20);
+    }];
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
+    cell.contentView.backgroundColor = [UIColor redColor];
     //侧滑动画
     if(self.type == 3){
         if (self.directionScroll_UP) {

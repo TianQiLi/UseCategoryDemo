@@ -178,11 +178,11 @@ static NSString * const CBVCCellIdentifiter = @"CBVCCellIdentifiter";
         if (_isAdjust){
             [self.tableView setValue:@(3) forKey:@"contentInsetAdjustmentBehavior"];
         }else
-        [self.tableView setValue:@(2) forKey:@"contentInsetAdjustmentBehavior"];
+           [self.tableView setValue:@(2) forKey:@"contentInsetAdjustmentBehavior"];
     } else {
         self.automaticallyAdjustsScrollViewInsets = _isAdjust;
     }
-    self.edgesForExtendedLayout = UIRectEdgeAll;
+    self.edgesForExtendedLayout = UIRectEdgeTop;
     self.enableHeaderRefresh = YES;
     self.enableFooterRefresh = NO;
     

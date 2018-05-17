@@ -7,7 +7,7 @@
 //
 
 #import "AppDelegate.h"
-
+#import "SubViewController.h"
 @interface AppDelegate ()
 
 @end
@@ -17,9 +17,38 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    
+    // 创建窗口
+    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    
+    
+    UIViewController * nav = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateInitialViewController];
+    
+    SubViewController * vc = [[SubViewController alloc] initWithTableStyle:UITableViewStyleGrouped autoAdjustScrollViewInsets:YES];
+    vc.type = 5;
+    
+    UINavigationController * nav2 = [[UINavigationController alloc] initWithRootViewController:vc];
+    
+    UITabBarController * tabBarContr = [[UITabBarController alloc] init];
+    tabBarContr.viewControllers = @[nav,nav2];
+    
+    self.window.rootViewController = tabBarContr;
+    [self configTabItems:tabBarContr.tabBar.items];
+    tabBarContr.tabBar.translucent = YES;
+    
+//    [[UITabBar appearance] setBackgroundColor:[UIColor redColor]];
+        [self.window makeKeyAndVisible];
     return YES;
 }
 
+- (void)configTabItems:(NSArray *)array{
+    NSArray * titleArray = @[@"首页",@"second"];
+    NSInteger i =0;
+    for (UITabBarItem * item in array) {
+        [item setTitle:titleArray[i++]];
+        [item setTitlePositionAdjustment:UIOffsetMake(0, -20)];
+    }
+}
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

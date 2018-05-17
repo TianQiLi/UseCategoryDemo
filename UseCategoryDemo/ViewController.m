@@ -22,7 +22,21 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-}
+//    self.edgesForExtendedLayout = UIRectEdgeNone;
+    
+    UIView * view = [UIView new];
+    view.frame = CGRectMake(0, 0, 20, 20);
+    view.backgroundColor = [UIColor blackColor];
+    [self.view addSubview:view];
+    [view mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.view);
+        make.leading.equalTo(self.view);
+        make.height.mas_equalTo(20);
+        make.width.mas_equalTo(20);
+    }];
+    NSLog(@"%@\n",self.view);
+    NSLog(@"---%lf,%lf\n",self.view.bounds.size.width,self.view.bounds.size.height);
+} 
 
 
 - (void)didReceiveMemoryWarning {
