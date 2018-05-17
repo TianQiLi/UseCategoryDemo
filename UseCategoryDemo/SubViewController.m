@@ -52,6 +52,9 @@
     self.dataStatusError_text = @"失败文本或者图片";
     self.dataStatusUnknown_text = @"加载中文本或者图片";
     [self.tableView.mj_header beginRefreshing];
+    self.tableView.backgroundColor = [UIColor redColor];
+    self.view.backgroundColor = [UIColor redColor];
+    
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{

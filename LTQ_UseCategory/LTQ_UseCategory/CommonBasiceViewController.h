@@ -18,16 +18,11 @@
 + (CGFloat)cellHeight;
 @end
 
-
-
-
-
-
 typedef void(^SuccessBlock)(NSArray * array);
 typedef void(^FailureBlock)(NSError * error);
 @interface CommonBasiceViewController : UIViewController
 @property (readonly) NSString * CBVCCellIdentifiter;
- 
+
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSMutableArray *arrayData;
 @property (nonatomic, copy)  SuccessBlock  successBlock;
@@ -40,7 +35,10 @@ typedef void(^FailureBlock)(NSError * error);
 @property (assign, nonatomic) BOOL enableFooterRefresh;
 @property (assign, nonatomic) UITableViewStyle tableViewStyle;//默认UITableViewStylePlain
 @property (nonatomic, assign) BOOL directionScroll_UP;
+/*automaticallyAdjustsScrollViewInsets = NO*/
 - (id)initWithTableStyle:(UITableViewStyle)tableViewStyle;
+/**/
+- (id)initWithTableStyle:(UITableViewStyle)tableViewStyle autoAdjustScrollViewInsets:(BOOL)isAdjust;
 - (void)basicRequestData;
 - (void)loadTopData;
 - (void)loadMoreData;
@@ -57,4 +55,5 @@ typedef void(^FailureBlock)(NSError * error);
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath;
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section;
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath;
+
 @end

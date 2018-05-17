@@ -14,7 +14,7 @@
 
 @implementation ViewController
 - (IBAction)clickBtn:(UIButton *)sender {
-    SubViewController * vc = [[SubViewController alloc] initWithTableStyle:UITableViewStyleGrouped];
+    SubViewController * vc = [[SubViewController alloc] initWithTableStyle:UITableViewStyleGrouped autoAdjustScrollViewInsets:YES];
     vc.type = sender.tag;
     [self.navigationController pushViewController:vc animated:YES];
 }

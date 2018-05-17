@@ -99,29 +99,31 @@
 
 
 static NSString * const CBVCCellIdentifiter = @"CBVCCellIdentifiter";
-
 @interface CommonBasiceViewController ()<UITableViewDelegate,UITableViewDataSource,DZNEmptyDataSetSource,DZNEmptyDataSetDelegate>
 /** tablevie */
 @property (assign, nonatomic) BOOL isHeaderRefreshing;
+@property (assign, nonatomic) BOOL isAdjust;//默认NO
 @end
 
 @implementation CommonBasiceViewController
-- (id)initWithTableStyle:(UITableViewStyle)tableViewStyle{
-    if (self = [self init]) {
-         _tableViewStyle = tableViewStyle;
-    }
-    return self;
-}
-
-- (id)init{
+- (id)initWithTableStyle:(UITableViewStyle)tableViewStyle autoAdjustScrollViewInsets:(BOOL)isAdjust{
     if (self = [super init]) {
+        _tableViewStyle = tableViewStyle;
+        _isAdjust = isAdjust;
         _rows = 30;
         _page = 0;
         _pageFirst = 0;
         _arrayData = [[NSMutableArray alloc] init];
-        _tableViewStyle = UITableViewStylePlain;
     }
     return self;
+    
+}
+- (id)initWithTableStyle:(UITableViewStyle)tableViewStyle{
+    return [self initWithTableStyle:tableViewStyle autoAdjustScrollViewInsets:NO];
+}
+
+- (id)init{
+    return [self initWithTableStyle:UITableViewStylePlain autoAdjustScrollViewInsets:NO];
 }
 
 - (void)setPageFirst:(NSInteger)pageFirst{
@@ -173,16 +175,19 @@ static NSString * const CBVCCellIdentifiter = @"CBVCCellIdentifiter";
     }];
     
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"11.0")) {
+        if (_isAdjust){
+            [self.tableView setValue:@(3) forKey:@"contentInsetAdjustmentBehavior"];
+        }else
         [self.tableView setValue:@(2) forKey:@"contentInsetAdjustmentBehavior"];
     } else {
-        self.automaticallyAdjustsScrollViewInsets = NO;
+        self.automaticallyAdjustsScrollViewInsets = _isAdjust;
     }
-    
-    self.edgesForExtendedLayout = UIRectEdgeNone;
+    self.edgesForExtendedLayout = UIRectEdgeAll;
     self.enableHeaderRefresh = YES;
     self.enableFooterRefresh = NO;
     
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:CBVCCellIdentifiter];
+    //    [self.tableView registerNib:[UINib nibWithNibName:@"CommonTextTableViewCell" bundle:nil] forCellReuseIdentifier:[CommonTextTableViewCell identifiter]];
     @weakify(self)
     _successBlock = ^(NSArray * array){
         @strongify(self)
@@ -210,13 +215,13 @@ static NSString * const CBVCCellIdentifiter = @"CBVCCellIdentifiter";
             [self.tableView reloadData];
         }
         else
-            self.dataStatusType = @(DataStatusOk);
-      
+        self.dataStatusType = @(DataStatusOk);
+        
     };
     
     self.tableView.emptyDataSetDelegate = self;
     self.tableView.emptyDataSetSource = self;
-  
+    
     
     [RACObserve(self.tableView,contentOffset)subscribeNext:^(NSValue *point) {
         @strongify(self)
@@ -236,28 +241,28 @@ static NSString * const CBVCCellIdentifiter = @"CBVCCellIdentifiter";
             return ;
         }
         switch ([status integerValue]) {
-            case MJRefreshStateIdle:{
-                [self setApiStatus];
-                break;
-            }
-            case MJRefreshStatePulling:{//start
-                break;
-            }
-            case MJRefreshStateRefreshing:{//start
-                self.dataStatusType = @(DataStatusNoKnown);
-                break;
-            }
-            case MJRefreshStateWillRefresh:
-            case MJRefreshStateNoMoreData:{//over
-                self.dataStatusType = @(DataStatusNoKnown);
-                break;
-            }
+                case MJRefreshStateIdle:{
+                    [self setApiStatus];
+                    break;
+                }
+                case MJRefreshStatePulling:{//start
+                    break;
+                }
+                case MJRefreshStateRefreshing:{//start
+                    self.dataStatusType = @(DataStatusNoKnown);
+                    break;
+                }
+                case MJRefreshStateWillRefresh:
+                case MJRefreshStateNoMoreData:{//over
+                    self.dataStatusType = @(DataStatusNoKnown);
+                    break;
+                }
             default:
                 break;
         }
-   
+        
     }];
- 
+    
 }
 
 - (void)setEndRefresh:(NSArray *)array{
@@ -282,11 +287,11 @@ static NSString * const CBVCCellIdentifiter = @"CBVCCellIdentifiter";
         self.dataStatusType = @(DataStatusNoData);
     }
     else
-        self.dataStatusType = @(DataStatusOk);
+    self.dataStatusType = @(DataStatusOk);
 }
 
 - (void)basicRequestData{
-
+    
 }
 
 //TODO: 请求数据
@@ -299,7 +304,7 @@ static NSString * const CBVCCellIdentifiter = @"CBVCCellIdentifiter";
 - (void)loadMoreData{
     _isHeaderRefreshing = NO;
     self.page ++;
-    [self basicRequestData];    
+    [self basicRequestData];
 }
 
 #pragma mark - Table view data source
@@ -313,6 +318,12 @@ static NSString * const CBVCCellIdentifiter = @"CBVCCellIdentifiter";
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    //    CommonTextTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:[CommonTextTableViewCell identifiter]];
+    //    if ([self.arrayData[indexPath.row] isKindOfClass:[NSString class]]) {
+    //        cell.titleLable.text = self.arrayData[indexPath.row];
+    //    }
+    //    return cell;
+    
     UITableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:@"TextCell"];
     if(!cell){
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"TextCell"];
@@ -321,6 +332,7 @@ static NSString * const CBVCCellIdentifiter = @"CBVCCellIdentifiter";
         cell.textLabel.text = self.arrayData[indexPath.row];
     }
     return cell;
+    
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -328,7 +340,7 @@ static NSString * const CBVCCellIdentifiter = @"CBVCCellIdentifiter";
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
-
+    
 }
 
 
